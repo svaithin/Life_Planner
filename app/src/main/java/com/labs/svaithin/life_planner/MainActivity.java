@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private ListView lvItems;
     private TaskDbHelper mHelper;
 
+    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
