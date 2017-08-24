@@ -2,8 +2,10 @@ package com.labs.svaithin.life_planner;
 
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -16,7 +18,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -35,8 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayAdapter<String> itemsAdapter;
     private ListView lvItems;
     private TaskDbHelper mHelper;
-
-    
+    private String TAG = "Mainactivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +67,11 @@ public class MainActivity extends AppCompatActivity {
         mHelper = new TaskDbHelper(this);
 
 
+        //Update UI
         UpdateUI();
+
+        //Setup Listner
+        setupListViewListener();
 
     }
 
@@ -149,5 +156,76 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private void setupListViewListener() {
+        lvItems.setOnItemLongClickListener(
+                new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> adapter,
+                                                   final View item, final int pos, long id) {
+                        final EditText taskEditText = new EditText(getApplicationContext());
+
+                        taskEditText.setText(items.get(pos));
+                        taskEditText.setHint("Goal");
+                        Log.d(TAG,"edit text:"+items.get(pos));
+                        String completeButtonName = new String();
+
+                        AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                                .setView(taskEditText)
+                                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        String task = String.valueOf(taskEditText.getText());
+                                        if(!task.trim().isEmpty()) {
+
+                                            SQLiteDatabase update_db = mHelper.getWritableDatabase();
+
+
+                                            update_db.execSQL("update " + TaskContract.TaskEntry.PLAN +
+                                                    " set " + TaskContract.TaskEntry.PLANNAME + " = '" +
+                                                    task.toString() + "' where _id = " + (pos-1));
+
+                                            UpdateUI();
+                                            update_db.close();
+                                        }
+
+                                    }
+                                })
+                                .setNegativeButton("Delete", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        //Log.d("AlertDialog", "Negative");
+                                        SQLiteDatabase remove_db = mHelper.getWritableDatabase();
+                                        remove_db.execSQL("delete from " + TaskContract.TaskEntry.PLAN +
+                                                " where _id =" + (pos-1));
+                                        remove_db.close();
+                                        //items.remove(pos);
+                                        //lvItems.setAdapter(itemsAdapter);
+                                        UpdateUI();
+                                    }
+                                })
+                                .show();
+
+                        TextView dialogTitle = (TextView) dialog.findViewById(android.R.id.title);
+                        Log.d(TAG,"dialogtitle"+dialogTitle);
+                        Button save = (Button) dialog.findViewById(android.R.id.button1);
+                        Button delete = (Button) dialog.findViewById(android.R.id.button2);
+                        Button completed = (Button) dialog.findViewById(android.R.id.button3);
+
+
+                        return true;
+                    }
+
+                });
+        lvItems.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapter,
+                                            View item, int pos, long id) {
+                        //Log.d(TAG, "inside click" + pos + ":" + map.get(pos));
+                        Snackbar.make(item, "Replace with your own action", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+
+                    }
+
+                });
+    }
 
 }
