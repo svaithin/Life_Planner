@@ -18,6 +18,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".goal_tabbed"
+            android:label="@string/title_activity_goal_tabbed"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".test_goal" />
+        <activity android:name=".testing_tabs" />
+        <activity
+            android:name=".Main2Activity"
+            android:label="@string/title_activity_main2"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

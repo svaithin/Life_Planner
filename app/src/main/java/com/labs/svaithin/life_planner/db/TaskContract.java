@@ -15,7 +15,9 @@ public class TaskContract {
 
         //Table names
         public static final String PLAN = "plan";
+        public static final String PMILESTONE = "pmilestone";
         public static final String GOAL = "goal";
+        public static final String GMILESTONE = "gmilestone";
         public static final String HABIT = "habit";
         public static final String NOTIFICATION = "notification";
 
@@ -24,6 +26,16 @@ public class TaskContract {
         public static final String PLANNAME = "planname";
         public static final String PCOMPLETED = "pcompleted";
         public static final String PARCHIVED = "parch";
+
+        //Column names for PMILESTONE
+        public static final String PMILESTONENAME = "pmilestinename";
+        public static final String PMCOMPLETED = "pmcompleted";
+        public static final String PMPLANID = "pmplanid";
+
+        //Column names for GMILESTONE
+        public static final String GMILESTONENAME = "gmilestinename";
+        public static final String GMCOMPLETED = "gmcompleted";
+        public static final String GMGOALID = "gmgoalid";
 
         //Column name for GOAL
         public static final String GOALNAME = "goalname";

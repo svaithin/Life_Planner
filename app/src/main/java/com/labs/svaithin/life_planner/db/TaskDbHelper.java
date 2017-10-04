@@ -1,9 +1,11 @@
 package com.labs.svaithin.life_planner.db;
 
+import android.database.SQLException;
 import android.provider.BaseColumns;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import static android.provider.Contacts.SettingsColumns.KEY;
 
@@ -27,6 +29,22 @@ public class TaskDbHelper extends SQLiteOpenHelper {
 
         db.execSQL(createTable);
 
+        createTable = "CREATE TABLE " + TaskContract.TaskEntry.PMILESTONE + " ( " +
+                TaskContract.TaskEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                TaskContract.TaskEntry.PMILESTONENAME + " TEXT NOT NULL," +
+                TaskContract.TaskEntry.PMCOMPLETED + " BOOLEAN NOT NULL DEFAULT 0," +
+                TaskContract.TaskEntry.PMPLANID + " INTEGER," + " FOREIGN KEY (" +
+                TaskContract.TaskEntry.PMPLANID+")REFERENCES " +
+                TaskContract.TaskEntry.PLAN + "("+ TaskContract.TaskEntry._ID +"));";
+
+        try {
+
+            db.execSQL(createTable);
+            Log.d("test1","createtabe");
+        } catch (SQLException e) {
+            Log.d("craetetable", e.getMessage());
+        }
+
         createTable = "CREATE TABLE " + TaskContract.TaskEntry.GOAL + " ( " +
                 TaskContract.TaskEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 TaskContract.TaskEntry.GOALNAME + " TEXT NOT NULL," +
@@ -35,6 +53,16 @@ public class TaskDbHelper extends SQLiteOpenHelper {
                 TaskContract.TaskEntry.PLANID + " INTEGER," + " FOREIGN KEY (" +
                 TaskContract.TaskEntry.PLANID+")REFERENCES " +
                 TaskContract.TaskEntry.PLAN + "("+ TaskContract.TaskEntry._ID +"));";
+
+        db.execSQL(createTable);
+
+        createTable = "CREATE TABLE " + TaskContract.TaskEntry.GMILESTONE + " ( " +
+                TaskContract.TaskEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                TaskContract.TaskEntry.GMILESTONE + " TEXT NOT NULL," +
+                TaskContract.TaskEntry.GMCOMPLETED + " BOOLEAN NOT NULL DEFAULT 0," +
+                TaskContract.TaskEntry.GMGOALID + " INTEGER," + " FOREIGN KEY (" +
+                TaskContract.TaskEntry.GMGOALID+")REFERENCES " +
+                TaskContract.TaskEntry.GOAL + "("+ TaskContract.TaskEntry._ID +"));";
 
         db.execSQL(createTable);
 

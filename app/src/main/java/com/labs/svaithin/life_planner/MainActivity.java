@@ -30,6 +30,7 @@ import com.labs.svaithin.life_planner.db.TaskContract;
 import com.labs.svaithin.life_planner.db.TaskDbHelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static com.labs.svaithin.life_planner.R.id.lvItems;
 
@@ -40,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     private ListView lvItems;
     private TaskDbHelper mHelper;
     private String TAG = "Mainactivity";
+    HashMap<Integer, Integer> map;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
         items = new ArrayList<String>();
         ArrayList<String> taskList = new ArrayList<>();
         SQLiteDatabase db = mHelper.getReadableDatabase();
+        map = new HashMap<Integer, Integer>();
+        int row = 0;
 
         Cursor cursor = db.query(TaskContract.TaskEntry.PLAN,
                 new String[]{TaskContract.TaskEntry._ID, TaskContract.TaskEntry.PLANNAME,
@@ -89,7 +94,9 @@ public class MainActivity extends AppCompatActivity {
             int idx = cursor.getColumnIndex(TaskContract.TaskEntry.PLANNAME);
             //mySimpleNewAdapter.add(cursor.getString(idx));
             taskList.add(cursor.getString(idx));
-
+            int idt = cursor.getColumnIndex(TaskContract.TaskEntry._ID);
+            map.put(row, cursor.getInt(idt));
+            row++;
             //Log.d(TAG, "row" + doneMap);
 
         }
@@ -181,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
 
                                             update_db.execSQL("update " + TaskContract.TaskEntry.PLAN +
                                                     " set " + TaskContract.TaskEntry.PLANNAME + " = '" +
-                                                    task.toString() + "' where _id = " + (pos-1));
+                                                    task.toString() + "' where _id = " + map.get(pos));
 
                                             UpdateUI();
                                             update_db.close();
@@ -194,10 +201,8 @@ public class MainActivity extends AppCompatActivity {
                                         //Log.d("AlertDialog", "Negative");
                                         SQLiteDatabase remove_db = mHelper.getWritableDatabase();
                                         remove_db.execSQL("delete from " + TaskContract.TaskEntry.PLAN +
-                                                " where _id =" + (pos-1));
+                                                " where _id =" + map.get(pos));
                                         remove_db.close();
-                                        //items.remove(pos);
-                                        //lvItems.setAdapter(itemsAdapter);
                                         UpdateUI();
                                     }
                                 })
@@ -219,9 +224,10 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onItemClick(AdapterView<?> adapter,
                                             View item, int pos, long id) {
-                        //Log.d(TAG, "inside click" + pos + ":" + map.get(pos));
-                        Snackbar.make(item, "Replace with your own action", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
+                        //Intent intent = new Intent(getApplicationContext(), test_goal.class);
+                        Intent intent = new Intent(getApplicationContext(), Main2Activity.class);
+                        intent.putExtra("ID", map.get(pos));
+                        startActivity(intent);
 
                     }
 
