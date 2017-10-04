@@ -27,6 +27,10 @@
         <activity
             android:name=".Main2Activity"
             android:label="@string/title_activity_main2"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Habit_tabbed"
+            android:label="@string/title_activity_habit_tabbed"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
