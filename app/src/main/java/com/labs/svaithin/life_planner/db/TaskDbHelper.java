@@ -58,7 +58,7 @@ public class TaskDbHelper extends SQLiteOpenHelper {
 
         createTable = "CREATE TABLE " + TaskContract.TaskEntry.GMILESTONE + " ( " +
                 TaskContract.TaskEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                TaskContract.TaskEntry.GMILESTONE + " TEXT NOT NULL," +
+                TaskContract.TaskEntry.GMILESTONENAME + " TEXT NOT NULL," +
                 TaskContract.TaskEntry.GMCOMPLETED + " BOOLEAN NOT NULL DEFAULT 0," +
                 TaskContract.TaskEntry.GMGOALID + " INTEGER," + " FOREIGN KEY (" +
                 TaskContract.TaskEntry.GMGOALID+")REFERENCES " +
