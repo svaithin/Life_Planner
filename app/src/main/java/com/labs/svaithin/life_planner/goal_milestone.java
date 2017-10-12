@@ -177,8 +177,8 @@ public class goal_milestone extends Fragment {
                     public void onItemClick(AdapterView<?> adapter,
                                             View item, int pos, long id) {
                         //Intent intent = new Intent(getActivity(), test_goal.class);
-                        Intent intent = new Intent(getActivity(), Habit_tabbed.class);
-                        intent.putExtra("ID", map.get(pos));
+                        Intent intent = new Intent(getActivity(), Notify.class);
+                        //intent.putExtra("ID", map.get(pos));
                         startActivity(intent);
 
                     }
