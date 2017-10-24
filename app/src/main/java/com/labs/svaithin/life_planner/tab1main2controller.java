@@ -53,7 +53,8 @@ public class tab1main2controller extends Fragment{
             // Get extra data included in the Intent
             String message = intent.getStringExtra("message");
             UpdateUI();
-            Log.d("receiver", "Got message: " + message);
+            Log.d("Sidd: receiver", "Got message: " + message);
+
         }
     };
 
@@ -67,6 +68,8 @@ public class tab1main2controller extends Fragment{
         //DB handler
         mHelper = new TaskDbHelper(getActivity());
         planID = 0; //Need to change and get from extra
+        Log.d("Sidd", "Inside create view tab1");
+
 
 
 

@@ -54,7 +54,8 @@ public class TaskContract {
         public static final String NCOMPLETED = "ncompleted";
         public static final String NARCHIVED = "narch";
         public static final String HABITID = "habitid";
-        public static final String TIME = "time";
+        public static final String HOUR = "hour";
+        public static final String MINUTE = "minute";
         public static final String DAYOFWEEK = "dayofweek";
     }
 }

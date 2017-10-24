@@ -1,13 +1,20 @@
 package com.labs.svaithin.life_planner;
 
 import android.app.TimePickerDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.icu.text.DateFormat;
+
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
+
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -25,13 +32,26 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.labs.svaithin.life_planner.db.TaskContract;
+import com.labs.svaithin.life_planner.db.TaskDbHelper;
+
+import static com.labs.svaithin.life_planner.R.id.lvItems;
+import static com.labs.svaithin.life_planner.R.id.lvListNotify;
+
 public class Notify extends AppCompatActivity {
 
     private int mYear, mMonth, mDay, mHour, mMinute,timeset;
+    private ArrayList<String> items;
+    private ArrayAdapter<String> itemsAdapter;
+    private ListView lvItems;
+    private TaskDbHelper mHelper;
+    private String TAG = "Mainactivity";
+    HashMap<Integer, Integer> map;
     TextView clock;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +59,10 @@ public class Notify extends AppCompatActivity {
         setContentView(R.layout.activity_notify);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mHelper = new TaskDbHelper(this);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        UpdateUI();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -107,8 +129,30 @@ public class Notify extends AppCompatActivity {
         adb.setPositiveButton("Ok", new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialog, int which){
+
+                String checkedtext =(Arrays.toString(preCheckedItems)) ;
+
                //Test
-                Log.d("alertdialog!!!!","Clicked OK");
+                Log.d("alertdialog!!!!","Clicked OK"+checkedtext+mHour+mMinute+"which"+which);
+                //SQLiteDatabase update_db = mHelper.getWritableDatabase();
+
+                //this need to go
+                which =1;
+
+
+                SQLiteDatabase db = mHelper.getWritableDatabase();
+                ContentValues values = new ContentValues();
+                values.put(TaskContract.TaskEntry.HOUR, String.valueOf(mHour));
+                values.put(TaskContract.TaskEntry.MINUTE, String.valueOf(mMinute));
+                values.put(TaskContract.TaskEntry.HABITID, 0);
+                db.insertWithOnConflict(TaskContract.TaskEntry.NOTIFINAME,
+                        null,
+                        values,
+                        SQLiteDatabase.CONFLICT_REPLACE);
+                db.close();
+
+
+                UpdateUI();
             }
         });
 
@@ -148,6 +192,8 @@ public class Notify extends AppCompatActivity {
                         Snackbar.make(view, "time picked", Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
                         Log.d("Timepicker","hour" +hourOfDay + "min" +minute);
+                        mHour = hourOfDay;
+                        mMinute = minute;
                         int test = hourOfDay%12;
                         if(test < 1){
                             if(minute>10) {
@@ -169,5 +215,37 @@ public class Notify extends AppCompatActivity {
                     }
                 }, mHour, mMinute, false);
         timePickerDialog.show();
+    }
+
+    //Show UI List
+    void UpdateUI(){
+        lvItems = (ListView) findViewById(lvListNotify);
+        items = new ArrayList<String>();
+        ArrayList<String> taskList = new ArrayList<>();
+        SQLiteDatabase db = mHelper.getReadableDatabase();
+        map = new HashMap<Integer, Integer>();
+        int row = 0;
+
+        Cursor cursor = db.query(TaskContract.TaskEntry.NOTIFINAME,
+                new String[]{TaskContract.TaskEntry._ID, TaskContract.TaskEntry.DAYOFWEEK,
+                        TaskContract.TaskEntry.HOUR,TaskContract.TaskEntry.MINUTE}, null, null, null, null, null);
+        while (cursor.moveToNext()) {
+            int idx = cursor.getColumnIndex(TaskContract.TaskEntry.HOUR);
+            //mySimpleNewAdapter.add(cursor.getString(idx));
+            taskList.add(cursor.getString(idx));
+            int idt = cursor.getColumnIndex(TaskContract.TaskEntry._ID);
+            map.put(row, cursor.getInt(idt));
+            row++;
+            //Log.d(TAG, "row" + getString(idx));
+
+        }
+
+        //Code for testing
+        itemsAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, items);
+        lvItems.setAdapter(itemsAdapter);
+        itemsAdapter.addAll(taskList);
+        //items.add("First Item");
+        //items.add("Second Item");
     }
 }

@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 import static android.provider.Contacts.SettingsColumns.KEY;
 
 /**
@@ -77,11 +78,11 @@ public class TaskDbHelper extends SQLiteOpenHelper {
 
         db.execSQL(createTable);
 
-        createTable = "CREATE TABLE " + TaskContract.TaskEntry.NOTIFICATION + " ( " +
+        createTable = "CREATE TABLE " + TaskContract.TaskEntry.NOTIFINAME + " ( " +
                 TaskContract.TaskEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                TaskContract.TaskEntry.NOTIFINAME + " TEXT NOT NULL," +
-                TaskContract.TaskEntry.NARCHIVED + " BOOLEAN NOT NULL DEFAULT 0," +
-                TaskContract.TaskEntry.NCOMPLETED + " BOOLEAN NOT NULL DEFAULT 0," +
+                TaskContract.TaskEntry.DAYOFWEEK + " TEXT ," +
+                TaskContract.TaskEntry.HOUR + " TEXT NOT NULL, "+
+                TaskContract.TaskEntry.MINUTE + " TEXT NOT NULL, "+
                 TaskContract.TaskEntry.HABITID + " INTEGER," + " FOREIGN KEY (" +
                 TaskContract.TaskEntry.HABITID+")REFERENCES " +
                 TaskContract.TaskEntry.HABIT + "("+ TaskContract.TaskEntry._ID +"));";

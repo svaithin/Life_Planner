@@ -30,6 +30,8 @@ import com.labs.svaithin.life_planner.db.TaskDbHelper;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static android.os.Build.VERSION_CODES.M;
+
 /**
  * Created by Siddharth on 27/09/17.
  */
@@ -51,6 +53,8 @@ public class tab2main2controller extends Fragment {
             String message = intent.getStringExtra("message");
             UpdateUI();
             Log.d("receiver", "Got message: " + message);
+
+
         }
     };
 
@@ -63,6 +67,9 @@ public class tab2main2controller extends Fragment {
         //DB handler
         mHelper = new TaskDbHelper(getActivity());
         planID = 0; //Need to change and get from extra
+        Main2Activity myActivity = (Main2Activity)getActivity();
+        planID = myActivity.getPlanId();
+        Log.d("Sidd", "Inside create view tab2");
 
 
         //Update UI

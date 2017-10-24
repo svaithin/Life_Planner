@@ -62,7 +62,10 @@ public class Main2Activity extends AppCompatActivity {
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        planID =0;
+        Intent intent = getIntent();
+        planID =intent.getIntExtra("ID",0);
+        Log.d("Sidd: ","main2activity" + String.valueOf(planID));
+
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
@@ -84,10 +87,15 @@ public class Main2Activity extends AppCompatActivity {
                 mViewPager.getAdapter().notifyDataSetChanged();
             }
         });
+        //sendMessage();
 
 
 
+    }
 
+    public int getPlanId(){
+
+        return planID;
     }
 
     // This is the code for floating add button
@@ -129,8 +137,9 @@ public class Main2Activity extends AppCompatActivity {
         Log.d("sender", "Broadcasting message");
         Intent intent = new Intent("custom-event-name");
         // You can also include some extra data.
-        intent.putExtra("message", "This is my message!");
+        intent.putExtra("message", "this is a message");
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        Log.d("Sidd:","Sending message");
     }
 
     // This is the code for floating add button
