@@ -116,15 +116,19 @@ public class tab2main2controller extends Fragment {
             row++;
             //Log.d(TAG, "row" + doneMap);
 
+
         }
 
         //Code for testing
-        itemsAdapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_1, items);
-        lvItems.setAdapter(itemsAdapter);
-        itemsAdapter.addAll(taskList);
+        if(getActivity() != null) {
+            itemsAdapter = new ArrayAdapter<String>(getActivity(),
+                    android.R.layout.simple_list_item_1, items);
+            lvItems.setAdapter(itemsAdapter);
+            itemsAdapter.addAll(taskList);
+        }
         //items.add("First Item");
         //items.add("Second Item");
+        db.close();
     }
 
 

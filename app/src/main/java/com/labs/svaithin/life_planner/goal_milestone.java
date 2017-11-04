@@ -34,6 +34,8 @@ import com.labs.svaithin.life_planner.db.TaskDbHelper;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static android.os.Build.ID;
+
 public class goal_milestone extends Fragment {
 
     private ArrayList<String> items;
@@ -43,7 +45,7 @@ public class goal_milestone extends Fragment {
     private String TAG = "Milestone1activity";
     HashMap<Integer, Integer> map;
     View rootView;
-    Integer planID;
+    Integer goalID;
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -62,7 +64,10 @@ public class goal_milestone extends Fragment {
 
         //DB handler
         mHelper = new TaskDbHelper(getActivity());
-        planID = 0; //Need to change and get from extra
+        goalID = 0; //Need to change and get from extraHabit_tabbed myActivity = (Habit_tabbed) getActivity();
+        Habit_tabbed myActivity = (Habit_tabbed) getActivity();
+        goalID = myActivity.getGoalId();
+        Log.d("Sidd", "Inside create view goalmilestone");
 
 
         //Update UI
@@ -91,7 +96,7 @@ public class goal_milestone extends Fragment {
         Cursor cursor = db.query(TaskContract.TaskEntry.GMILESTONE,
                 new String[]{TaskContract.TaskEntry._ID, TaskContract.TaskEntry.GMILESTONENAME,
                         TaskContract.TaskEntry.GMCOMPLETED,TaskContract.TaskEntry.GMGOALID},
-                ""+TaskContract.TaskEntry.GMGOALID+" = ?",new String[]{planID.toString()}, null, null, null);
+                ""+TaskContract.TaskEntry.GMGOALID+" = ?",new String[]{goalID.toString()}, null, null, null);
         while (cursor.moveToNext()) {
             int idx = cursor.getColumnIndex(TaskContract.TaskEntry.GMILESTONENAME);
             //mySimpleNewAdapter.add(cursor.getString(idx));
@@ -106,10 +111,13 @@ public class goal_milestone extends Fragment {
 
 
         //Code for testing
-        itemsAdapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_1, items);
-        lvItems.setAdapter(itemsAdapter);
-        itemsAdapter.addAll(taskList);
+        if(getActivity() != null) {
+            itemsAdapter = new ArrayAdapter<String>(getActivity(),
+                    android.R.layout.simple_list_item_1, items);
+            lvItems.setAdapter(itemsAdapter);
+            itemsAdapter.addAll(taskList);
+        }
+        db.close();
         //items.add("First Item");
         //items.add("Second Item");
     }
@@ -178,7 +186,7 @@ public class goal_milestone extends Fragment {
                                             View item, int pos, long id) {
                         //Intent intent = new Intent(getActivity(), test_goal.class);
                         Intent intent = new Intent(getActivity(), Notify.class);
-                        //intent.putExtra("ID", map.get(pos));
+                        intent.putExtra("ID", map.get(pos));
                         startActivity(intent);
 
                     }

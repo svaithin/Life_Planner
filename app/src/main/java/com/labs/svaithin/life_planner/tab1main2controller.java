@@ -53,7 +53,7 @@ public class tab1main2controller extends Fragment{
             // Get extra data included in the Intent
             String message = intent.getStringExtra("message");
             UpdateUI();
-            Log.d("Sidd: receiver", "Got message: " + message);
+            //Log.d("Sidd: receiver", "Got message: " + message);
 
         }
     };
@@ -68,9 +68,9 @@ public class tab1main2controller extends Fragment{
         //DB handler
         mHelper = new TaskDbHelper(getActivity());
         planID = 0; //Need to change and get from extra
-        Log.d("Sidd", "Inside create view tab1");
-
-
+        Main2Activity myActivity = (Main2Activity)getActivity();
+        planID = myActivity.getPlanId();
+        Log.d("Sidd", "Inside create view tab1 planid:"+String.valueOf(planID));
 
 
         //Update UI
@@ -115,15 +115,19 @@ public class tab1main2controller extends Fragment{
             int idt = cursor.getColumnIndex(TaskContract.TaskEntry._ID);
             map.put(row, cursor.getInt(idt));
             row++;
-            //Log.d(TAG, "row" + doneMap);
+            Log.d("Sidd:","inside idx");
+
 
         }
 
+        db.close();
         //Code for testing
-        itemsAdapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_1, items);
-        lvItems.setAdapter(itemsAdapter);
-        itemsAdapter.addAll(taskList);
+        if(getActivity() != null) {
+            itemsAdapter = new ArrayAdapter<String>(getActivity(),
+                    android.R.layout.simple_list_item_1, items);
+            lvItems.setAdapter(itemsAdapter);
+            itemsAdapter.addAll(taskList);
+        }
         //items.add("First Item");
         //items.add("Second Item");
     }

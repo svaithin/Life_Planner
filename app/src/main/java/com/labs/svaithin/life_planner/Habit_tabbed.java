@@ -47,7 +47,7 @@ public class Habit_tabbed extends AppCompatActivity {
      */
     private ViewPager mViewPager;
     private TaskDbHelper mHelper;
-    Integer planID;
+    Integer goalID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +67,9 @@ public class Habit_tabbed extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
         mHelper = new TaskDbHelper(this);
-        planID = 0;
+        Intent intent = getIntent();
+        goalID = intent.getIntExtra("ID",0);
+        Log.d("Sidd: ","main2activity" + String.valueOf(goalID));
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -85,6 +87,9 @@ public class Habit_tabbed extends AppCompatActivity {
 
     }
 
+    public int getGoalId(){
+        return goalID;
+    }
     // This is the code for floating add button
     public void onFabClick1(){
 
@@ -102,7 +107,7 @@ public class Habit_tabbed extends AppCompatActivity {
                         ContentValues values = new ContentValues();
                         values.put(TaskContract.TaskEntry.GMILESTONENAME, task);
                         values.put(TaskContract.TaskEntry.GMCOMPLETED, 0);
-                        values.put(TaskContract.TaskEntry.GMGOALID, planID);
+                        values.put(TaskContract.TaskEntry.GMGOALID, goalID);
                         db.insertWithOnConflict(TaskContract.TaskEntry.GMILESTONE,
                                 null,
                                 values,
@@ -146,7 +151,7 @@ public class Habit_tabbed extends AppCompatActivity {
                         values.put(TaskContract.TaskEntry.HABITNAME, task);
                         values.put(TaskContract.TaskEntry.HCOMPLETED, 0);
                         values.put(TaskContract.TaskEntry.HARCHIVED, 0);
-                        values.put(TaskContract.TaskEntry.GOALID, planID);
+                        values.put(TaskContract.TaskEntry.GOALID, goalID);
                         db.insertWithOnConflict(TaskContract.TaskEntry.HABIT,
                                 null,
                                 values,
