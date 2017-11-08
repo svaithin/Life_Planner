@@ -186,6 +186,7 @@ public class goal_milestone extends Fragment {
                                             View item, int pos, long id) {
                         //Intent intent = new Intent(getActivity(), test_goal.class);
                         Intent intent = new Intent(getActivity(), Notify.class);
+                        Log.d("SIDDDDD:", ""+map.get(pos) );
                         intent.putExtra("ID", map.get(pos));
                         startActivity(intent);
 

@@ -3,6 +3,7 @@ package com.labs.svaithin.life_planner;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
@@ -53,6 +54,7 @@ public class Notify extends AppCompatActivity {
     private String TAG = "Mainactivity";
     HashMap<Integer, Integer> map;
     TextView clock;
+    Integer habitID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +64,8 @@ public class Notify extends AppCompatActivity {
         mHelper = new TaskDbHelper(this);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        Intent intent = getIntent();
+        habitID = intent.getIntExtra("ID",0);
         UpdateUI();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,7 +148,7 @@ public class Notify extends AppCompatActivity {
                 ContentValues values = new ContentValues();
                 values.put(TaskContract.TaskEntry.HOUR, String.valueOf(mHour));
                 values.put(TaskContract.TaskEntry.MINUTE, String.valueOf(mMinute));
-                values.put(TaskContract.TaskEntry.HABITID, 0);
+                values.put(TaskContract.TaskEntry.HABITID, habitID);
                 db.insertWithOnConflict(TaskContract.TaskEntry.NOTIFINAME,
                         null,
                         values,
@@ -228,7 +232,8 @@ public class Notify extends AppCompatActivity {
 
         Cursor cursor = db.query(TaskContract.TaskEntry.NOTIFINAME,
                 new String[]{TaskContract.TaskEntry._ID, TaskContract.TaskEntry.DAYOFWEEK,
-                        TaskContract.TaskEntry.HOUR,TaskContract.TaskEntry.MINUTE}, null, null, null, null, null);
+                        TaskContract.TaskEntry.HOUR,TaskContract.TaskEntry.MINUTE},
+                ""+TaskContract.TaskEntry.HABITID+" = ?",new String[]{habitID.toString()}, null, null, null, null);
         while (cursor.moveToNext()) {
             int idx = cursor.getColumnIndex(TaskContract.TaskEntry.HOUR);
             //mySimpleNewAdapter.add(cursor.getString(idx));
