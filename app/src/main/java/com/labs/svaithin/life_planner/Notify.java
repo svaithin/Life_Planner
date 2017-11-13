@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -41,13 +42,15 @@ import android.widget.Toast;
 import com.labs.svaithin.life_planner.db.TaskContract;
 import com.labs.svaithin.life_planner.db.TaskDbHelper;
 
+import static android.R.attr.format;
+import static android.R.attr.id;
 import static com.labs.svaithin.life_planner.R.id.lvItems;
 import static com.labs.svaithin.life_planner.R.id.lvListNotify;
 
 public class Notify extends AppCompatActivity {
 
     private int mYear, mMonth, mDay, mHour, mMinute,timeset;
-    private ArrayList<String> items;
+    private ArrayList<String> items,time,days;
     private ArrayAdapter<String> itemsAdapter;
     private ListView lvItems;
     private TaskDbHelper mHelper;
@@ -86,6 +89,11 @@ public class Notify extends AppCompatActivity {
 
         SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
         String dateString = sdf.format(date);
+        SimpleDateFormat hour = new SimpleDateFormat("HH");
+        mHour = Integer.parseInt(hour.format(date));
+        SimpleDateFormat format = new SimpleDateFormat("mm");
+        mMinute = Integer.parseInt(format.format(date));
+        Log.d("Siddddd",""+mHour+":"+mMinute);
         clock.setText(dateString);
         clock.setTypeface(Typeface.DEFAULT_BOLD);
         clock.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
@@ -225,6 +233,8 @@ public class Notify extends AppCompatActivity {
     void UpdateUI(){
         lvItems = (ListView) findViewById(lvListNotify);
         items = new ArrayList<String>();
+        time = new ArrayList<String>();
+        days = new ArrayList<String>();
         ArrayList<String> taskList = new ArrayList<>();
         SQLiteDatabase db = mHelper.getReadableDatabase();
         map = new HashMap<Integer, Integer>();
@@ -236,8 +246,27 @@ public class Notify extends AppCompatActivity {
                 ""+TaskContract.TaskEntry.HABITID+" = ?",new String[]{habitID.toString()}, null, null, null, null);
         while (cursor.moveToNext()) {
             int idx = cursor.getColumnIndex(TaskContract.TaskEntry.HOUR);
+            String h = cursor.getString(idx);
+            int idm = cursor.getColumnIndex(TaskContract.TaskEntry.MINUTE);
+            String m = cursor.getString(idm);
             //mySimpleNewAdapter.add(cursor.getString(idx));
-            taskList.add(cursor.getString(idx));
+            int test = Integer.parseInt(h)%12;
+            String clock1;
+            if(test < 1){
+                if(Integer.parseInt(m)>9) {
+                    clock1 = h + ":" + m + " AM";
+                }else{
+                    clock1 =h + ":0" + m + " AM";
+                }
+            }
+            else {
+                if(Integer.parseInt(m)>9) {
+                    clock1 = Integer.parseInt(h)%12 + ":" + m + " PM";
+                }else{
+                    clock1 =Integer.parseInt(h)%12+ ":0" + m + " PM";
+                }
+            }
+            taskList.add(clock1);
             int idt = cursor.getColumnIndex(TaskContract.TaskEntry._ID);
             map.put(row, cursor.getInt(idt));
             row++;
@@ -247,7 +276,7 @@ public class Notify extends AppCompatActivity {
 
         //Code for testing
         itemsAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, items);
+                R.layout.notify_list_adaptor,R.id.time, items);
         lvItems.setAdapter(itemsAdapter);
         itemsAdapter.addAll(taskList);
         //items.add("First Item");
