@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 import android.os.Bundle;
@@ -58,6 +59,8 @@ public class Notify extends AppCompatActivity {
     HashMap<Integer, Integer> map;
     TextView clock;
     Integer habitID;
+    ArrayList<DataModel> dataModels;
+    private static CustomAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -149,13 +152,14 @@ public class Notify extends AppCompatActivity {
                 //SQLiteDatabase update_db = mHelper.getWritableDatabase();
 
                 //this need to go
-                which =1;
+                //which =1;
 
 
                 SQLiteDatabase db = mHelper.getWritableDatabase();
                 ContentValues values = new ContentValues();
                 values.put(TaskContract.TaskEntry.HOUR, String.valueOf(mHour));
                 values.put(TaskContract.TaskEntry.MINUTE, String.valueOf(mMinute));
+                values.put(TaskContract.TaskEntry.DAYOFWEEK, checkedtext);
                 values.put(TaskContract.TaskEntry.HABITID, habitID);
                 db.insertWithOnConflict(TaskContract.TaskEntry.NOTIFINAME,
                         null,
@@ -236,10 +240,14 @@ public class Notify extends AppCompatActivity {
         time = new ArrayList<String>();
         days = new ArrayList<String>();
         ArrayList<String> taskList = new ArrayList<>();
+        ArrayList<String> alarmdays = new ArrayList<>();
         SQLiteDatabase db = mHelper.getReadableDatabase();
         map = new HashMap<Integer, Integer>();
         int row = 0;
+        List<String> myList;
+        String displayDays = "";
 
+        dataModels= new ArrayList<>();
         Cursor cursor = db.query(TaskContract.TaskEntry.NOTIFINAME,
                 new String[]{TaskContract.TaskEntry._ID, TaskContract.TaskEntry.DAYOFWEEK,
                         TaskContract.TaskEntry.HOUR,TaskContract.TaskEntry.MINUTE},
@@ -269,15 +277,64 @@ public class Notify extends AppCompatActivity {
             taskList.add(clock1);
             int idt = cursor.getColumnIndex(TaskContract.TaskEntry._ID);
             map.put(row, cursor.getInt(idt));
+            int idday = cursor.getColumnIndex(TaskContract.TaskEntry.DAYOFWEEK);
+            String Days = cursor.getString(idday);
+            displayDays = "";
+            String T = "true";
+            if(Days != null) {
+                String s = Days.substring(1, Days.length() - 1);
+                myList = new ArrayList<String>(Arrays.asList(s.split(",")));
+                Log.d("Siddddd", "Days" + myList);
+
+
+                if(T.equals(myList.get(0))){
+                    displayDays = displayDays + "Sun    ";
+
+                }
+                Log.d("Sun", "Days" + myList);
+                if(T.equals(myList.get(1).replaceAll("\\s+",""))){
+                    displayDays = displayDays + "Mon    ";
+                    Log.d("Mon", "Days" + myList);
+                }
+                if(T.equals(myList.get(2).replaceAll("\\s+",""))){
+                    displayDays = displayDays + "Tue    ";
+                    Log.d("Tue", "Days" + myList);
+                }
+                if(T.equals(myList.get(3).replaceAll("\\s+",""))){
+                    displayDays = displayDays + "Wed    ";
+                    Log.d("Wed", "Days" + myList);
+                }
+                if(T.equals(myList.get(4).replaceAll("\\s+",""))){
+                    displayDays = displayDays + "Thus    ";
+                    Log.d("Thus", "Days" + myList);
+                }
+                if(T.equals(myList.get(5).replaceAll("\\s+",""))){
+                    displayDays = displayDays + "Fri    ";
+                    Log.d("Fri", "Days" + myList);
+                }
+                if(T.equals(myList.get(6).replaceAll("\\s+",""))){
+                    displayDays = displayDays + "Sat    ";
+                    Log.d("Sat", "Days" + myList);
+                }
+
+            }
+
+            dataModels.add(new DataModel(clock1,displayDays));
             row++;
             //Log.d(TAG, "row" + getString(idx));
 
         }
 
         //Code for testing
+        adapter= new CustomAdapter(dataModels,getApplicationContext());
+
         itemsAdapter = new ArrayAdapter<String>(this,
                 R.layout.notify_list_adaptor,R.id.time, items);
-        lvItems.setAdapter(itemsAdapter);
+        if(displayDays != null){
+
+        }
+        lvItems.setAdapter(adapter);
+        //lvItems.setAdapter(itemsAdapter);
         itemsAdapter.addAll(taskList);
         //items.add("First Item");
         //items.add("Second Item");
