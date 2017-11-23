@@ -36,6 +36,7 @@
             android:name=".Notify"
             android:label="@string/title_activity_notify"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <receiver android:name=".NotificationPublisher" />
     </application>
 
 </manifest>

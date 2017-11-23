@@ -1,7 +1,11 @@
 package com.labs.svaithin.life_planner;
 
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -18,9 +22,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -43,8 +50,10 @@ import android.widget.Toast;
 import com.labs.svaithin.life_planner.db.TaskContract;
 import com.labs.svaithin.life_planner.db.TaskDbHelper;
 
+import static android.R.attr.delay;
 import static android.R.attr.format;
 import static android.R.attr.id;
+import static android.os.Build.VERSION_CODES.N;
 import static com.labs.svaithin.life_planner.R.id.lvItems;
 import static com.labs.svaithin.life_planner.R.id.lvListNotify;
 
@@ -59,6 +68,7 @@ public class Notify extends AppCompatActivity {
     HashMap<Integer, Integer> map;
     TextView clock;
     Integer habitID;
+    long notifyid;
     ArrayList<DataModel> dataModels;
     private static CustomAdapter adapter;
     @Override
@@ -81,6 +91,7 @@ public class Notify extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
     }
 
     public void onFabClick(){
@@ -161,14 +172,19 @@ public class Notify extends AppCompatActivity {
                 values.put(TaskContract.TaskEntry.MINUTE, String.valueOf(mMinute));
                 values.put(TaskContract.TaskEntry.DAYOFWEEK, checkedtext);
                 values.put(TaskContract.TaskEntry.HABITID, habitID);
-                db.insertWithOnConflict(TaskContract.TaskEntry.NOTIFINAME,
+                notifyid = db.insertWithOnConflict(TaskContract.TaskEntry.NOTIFINAME,
                         null,
                         values,
                         SQLiteDatabase.CONFLICT_REPLACE);
                 db.close();
+                Log.d("dbinsertid", ""+notifyid);
 
 
+                SetAlarm setalm = new SetAlarm(Notify.this);
+                setalm.setNextAlarm(notifyid);
                 UpdateUI();
+
+                Log.d("Sidddddd","set alarm");
             }
         });
 
@@ -192,6 +208,7 @@ public class Notify extends AppCompatActivity {
         dialog.show();*/
 
     }
+    
 
     public void timepicker(){
         final Calendar c = Calendar.getInstance();
