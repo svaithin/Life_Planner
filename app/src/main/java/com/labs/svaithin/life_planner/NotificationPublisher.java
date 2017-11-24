@@ -59,11 +59,7 @@ public class NotificationPublisher extends BroadcastReceiver {
                 .setContentText(content);
 
 
-        if (Build.VERSION.SDK_INT < 16) {
-            nm.notify(notifyid, builder.getNotification());
-        } else {
-            nm.notify(notifyid, builder.build());
-        }
+
 
         //set next alarm
 
@@ -82,6 +78,11 @@ public class NotificationPublisher extends BroadcastReceiver {
             SetAlarm setalm = new SetAlarm(context);
             setalm.setNextAlarm(notifyid);
             Log.d("next alarm","inside set loop");
+            if (Build.VERSION.SDK_INT < 16) {
+                nm.notify(notifyid, builder.getNotification());
+            } else {
+                nm.notify(notifyid, builder.build());
+            }
         }
 
     }
