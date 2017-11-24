@@ -199,9 +199,44 @@ public class MainActivity extends AppCompatActivity {
                                 .setNegativeButton("Delete", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         //Log.d("AlertDialog", "Negative");
+
                                         SQLiteDatabase remove_db = mHelper.getWritableDatabase();
+
+                                        //remove notification
+
+                                        remove_db.execSQL("delete from " + TaskContract.TaskEntry.NOTIFINAME +
+                                                " where "+TaskContract.TaskEntry.HABITID+ " in ( select _id from " +
+                                                TaskContract.TaskEntry.GMILESTONE+ " where "+
+                                                TaskContract.TaskEntry.GMGOALID + " in ( select _id from  "+
+                                                TaskContract.TaskEntry.GOAL+ " where "+
+                                                TaskContract.TaskEntry.PLANID + " = "+map.get(pos)+"))");
+
+
+                                        //remove habit and goalmilestone
+                                        remove_db.execSQL("delete from " + TaskContract.TaskEntry.HABIT +
+                                                " where "+TaskContract.TaskEntry.GOALID+ " in ( select _id from " +
+                                                TaskContract.TaskEntry.GOAL+ " where "+
+                                                TaskContract.TaskEntry.PLANID + " = "+map.get(pos)+")");
+
+                                        remove_db.execSQL("delete from " + TaskContract.TaskEntry.GMILESTONE +
+                                                " where "+TaskContract.TaskEntry.GMGOALID+ " in ( select _id from " +
+                                                TaskContract.TaskEntry.GOAL+ " where "+
+                                                TaskContract.TaskEntry.PLANID + " = "+map.get(pos)+")");
+
+                                        //remove Goal associated with Plan
+                                        remove_db.execSQL("delete from " + TaskContract.TaskEntry.GOAL +
+                                                " where "+TaskContract.TaskEntry.PLANID+ " =" + map.get(pos));
+
+                                        remove_db.execSQL("delete from " + TaskContract.TaskEntry.PMILESTONE +
+                                                " where "+TaskContract.TaskEntry.PMPLANID+ " =" + map.get(pos));
+
+                                        //remove plan
                                         remove_db.execSQL("delete from " + TaskContract.TaskEntry.PLAN +
                                                 " where _id =" + map.get(pos));
+
+
+
+
                                         remove_db.close();
                                         UpdateUI();
                                     }

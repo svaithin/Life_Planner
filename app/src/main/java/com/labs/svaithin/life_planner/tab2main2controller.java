@@ -169,8 +169,23 @@ public class tab2main2controller extends Fragment {
                                     public void onClick(DialogInterface dialog, int which) {
                                         //Log.d("AlertDialog", "Negative");
                                         SQLiteDatabase remove_db = mHelper.getWritableDatabase();
+                                        // deleting associated notification
+                                        Log.d("deleting goal ", "Negative");
+                                        remove_db.execSQL("delete from " + TaskContract.TaskEntry.NOTIFINAME +
+                                                " where "+TaskContract.TaskEntry.HABITID+ " in ( select _id from " +
+                                                TaskContract.TaskEntry.GMILESTONE+ " where "+
+                                                TaskContract.TaskEntry.GMGOALID + " = "+map.get(pos)+")");
+
+                                        remove_db.execSQL("delete from " + TaskContract.TaskEntry.GMILESTONE +
+                                                " where "+TaskContract.TaskEntry.GMGOALID+ "  =" + map.get(pos));
+                                        remove_db.execSQL("delete from " + TaskContract.TaskEntry.HABIT +
+                                                " where "+TaskContract.TaskEntry.GOALID+ "  =" + map.get(pos));
+
                                         remove_db.execSQL("delete from " + TaskContract.TaskEntry.GOAL +
                                                 " where _id =" + map.get(pos));
+                                        //deleting associated Goalmilestone and habit.
+
+
                                         remove_db.close();
                                         UpdateUI();
                                     }
