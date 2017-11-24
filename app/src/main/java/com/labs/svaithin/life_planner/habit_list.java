@@ -154,7 +154,7 @@ public class habit_list extends Fragment {
                                 })
                                 .setNegativeButton("Delete", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
-                                        //Log.d("AlertDialog", "Negative");
+                                        Log.d("Habitlist delete", "Negative");
                                         SQLiteDatabase remove_db = mHelper.getWritableDatabase();
                                         remove_db.execSQL("delete from " + TaskContract.TaskEntry.HABIT +
                                                 " where _id =" + map.get(pos));

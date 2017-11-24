@@ -162,6 +162,8 @@ public class goal_milestone extends Fragment {
                                         SQLiteDatabase remove_db = mHelper.getWritableDatabase();
                                         remove_db.execSQL("delete from " + TaskContract.TaskEntry.GMILESTONE +
                                                 " where _id =" + map.get(pos));
+                                        remove_db.execSQL("delete from " + TaskContract.TaskEntry.NOTIFINAME +
+                                                " where "+TaskContract.TaskEntry.HABITID+ " =" + map.get(pos));
                                         remove_db.close();
                                         UpdateUI();
                                     }
