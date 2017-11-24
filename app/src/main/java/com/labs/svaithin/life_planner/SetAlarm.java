@@ -74,6 +74,10 @@ public class SetAlarm {
         int m = Calendar.getInstance().get(Calendar.MINUTE);
         Log.d("Today",""+today+"Hour: "+h+":"+m + "from db"+hour+":"+minute);
         Intent notificationIntent = new Intent(context1, NotificationPublisher.class);
+        notificationIntent.putExtra("Title","LifePlanner1");
+        notificationIntent.putExtra("Content","LifePlanner1");
+        notificationIntent.putExtra("notifyid",Long.toString(notifyID));
+
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context1.getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
