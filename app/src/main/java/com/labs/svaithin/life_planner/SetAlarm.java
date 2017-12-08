@@ -29,7 +29,6 @@ import java.util.Calendar;
 public class SetAlarm {
 
     private TaskDbHelper mHelper;
-    private Boolean sun,mon,tue,wed,thus,fri,sat;
     private String hour,minute;
     Context context1;
     List<String> myList;;

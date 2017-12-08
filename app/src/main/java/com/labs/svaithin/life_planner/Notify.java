@@ -227,7 +227,7 @@ public class Notify extends AppCompatActivity {
                         Log.d("Timepicker","hour" +hourOfDay + "min" +minute);
                         mHour = hourOfDay;
                         mMinute = minute;
-                        int test = hourOfDay%12;
+                        int test = hourOfDay/12;
                         if(test < 1){
                             if(minute>10) {
                                 clock.setText(hourOfDay + ":" + minute + " AM");
@@ -275,7 +275,7 @@ public class Notify extends AppCompatActivity {
             int idm = cursor.getColumnIndex(TaskContract.TaskEntry.MINUTE);
             String m = cursor.getString(idm);
             //mySimpleNewAdapter.add(cursor.getString(idx));
-            int test = Integer.parseInt(h)%12;
+            int test = Integer.parseInt(h)/12;
             String clock1;
             if(test < 1){
                 if(Integer.parseInt(m)>9) {
